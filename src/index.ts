@@ -4,8 +4,10 @@ import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
 import { PORT } from './config/env';
-import authRoutes from './routes/auth';
 import { errorHandler } from './middleware/errorHandler';
+import authRoutes from './routes/auth';
+import userRoutes from './routes/user';
+
 
 const app = express();
 
@@ -16,6 +18,7 @@ app.use(morgan('dev'));
 
 // Routes
 app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
 
 // Error handler
 app.use(errorHandler);
