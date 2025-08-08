@@ -4,8 +4,6 @@ import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import { z } from 'zod';
 
-const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
-dotenv.config({ path: path.resolve(process.cwd(), envFile) });
 
 const prisma = new PrismaClient();
 
@@ -41,7 +39,7 @@ export async function main() {
   console.log('Super admin created:', email);
 }
 
-if (require.main === module) {
+
   main()
     .catch(e => {
       console.error(e);
@@ -50,4 +48,3 @@ if (require.main === module) {
     .finally(async () => {
       await prisma.$disconnect();
     });
-}
