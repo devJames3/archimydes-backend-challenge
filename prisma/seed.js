@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { z } from 'zod';
 
+
 const envPath = process.env.NODE_ENV === 'test'
   ? path.resolve(process.cwd(), '.env.test')
   : path.resolve(process.cwd(), '.env');
@@ -50,8 +51,7 @@ export async function main() {
   console.log('Super admin created:', email);
 }
 
-if (require.main === module) {
-  // called like "node prisma/seed.js"
+
   main()
     .catch(e => {
       console.error(e);
@@ -60,4 +60,3 @@ if (require.main === module) {
     .finally(async () => {
       await prisma.$disconnect();
     });
-}
