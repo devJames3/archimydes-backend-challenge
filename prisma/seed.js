@@ -1,27 +1,18 @@
+import path from 'path';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-
 import dotenv from 'dotenv';
-import path from 'path';
 import { z } from 'zod';
 
-const envPath = process.env.NODE_ENV === 'test'
-  ? path.resolve(process.cwd(), '.env.test')
-  : path.resolve(process.cwd(), '.env');
-
-dotenv.config({ path: envPath });
+const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
+dotenv.config({ path: path.resolve(process.cwd(), envFile) });
 
 const prisma = new PrismaClient();
 
-// Schema to validate .env values
 const envSchema = z.object({
-  SUPER_ADMIN_EMAIL: z.email({ message: 'Invalid SUPER_ADMIN_EMAIL format' }),
-  SUPER_ADMIN_PASSWORD: z.string().min(8, { message: 'SUPER_ADMIN_PASSWORD must be at least 8 characters' }),
-  HASH_SALT: z
-    .string()
-    .transform(val => Number(val))
-    .refine(num => !isNaN(num) && num > 0, { message: 'HASH_SALT must be a valid positive number' })
-    .optional()
+  SUPER_ADMIN_EMAIL: z.email(),
+  SUPER_ADMIN_PASSWORD: z.string().min(8),
+  HASH_SALT: z.string().optional()
 });
 
 export async function main() {
@@ -29,7 +20,7 @@ export async function main() {
 
   const email = parsedEnv.SUPER_ADMIN_EMAIL;
   const password = parsedEnv.SUPER_ADMIN_PASSWORD;
-  const salt = parsedEnv.HASH_SALT || 10;
+  const salt = parseInt(parsedEnv.HASH_SALT || '10', 10);
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
@@ -51,7 +42,6 @@ export async function main() {
 }
 
 if (require.main === module) {
-  // called like "node prisma/seed.js"
   main()
     .catch(e => {
       console.error(e);

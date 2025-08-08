@@ -1,20 +1,17 @@
-// src/tests/seedSuperAdmin.test.ts
+// MUST be first
 import dotenv from 'dotenv';
-dotenv.config({ path: '.env.test' }); // must be first
+dotenv.config({ path: '.env.test' }); 
 
+// Now safe to import Prisma
 import { PrismaClient } from '@prisma/client';
 // @ts-ignore
-import { main as runSeed } from '../../prisma/seed'; // because seed exports main
-import { email } from 'zod';
+import { main as runSeed } from '../../prisma/seed';
+
 const prisma = new PrismaClient();
 
-console.log({email: process.env.SUPER_ADMIN_EMAIL});
-
-describe('Super Admin seeding (SQLite)', () => {
+describe('Super Admin seeding (SQLite)', () => { 
   const email = process.env.SUPER_ADMIN_EMAIL;
-
   beforeAll(async () => {
-    // ensure DB ready; optionally run prisma db push earlier instead
     await prisma.user.deleteMany({});
   });
 
