@@ -1,9 +1,15 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+
 import dotenv from 'dotenv';
+import path from 'path';
 import { z } from 'zod';
 
-dotenv.config();
+const envPath = process.env.NODE_ENV === 'test'
+  ? path.resolve(process.cwd(), '.env.test')
+  : path.resolve(process.cwd(), '.env');
+
+dotenv.config({ path: envPath });
 
 const prisma = new PrismaClient();
 
@@ -18,7 +24,7 @@ const envSchema = z.object({
     .optional()
 });
 
-async function main() {
+export async function main() {
   const parsedEnv = envSchema.parse(process.env);
 
   const email = parsedEnv.SUPER_ADMIN_EMAIL;
@@ -44,11 +50,14 @@ async function main() {
   console.log('Super admin created:', email);
 }
 
-main()
-  .catch(e => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+if (require.main === module) {
+  // called like "node prisma/seed.js"
+  main()
+    .catch(e => {
+      console.error(e);
+      process.exit(1);
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}

@@ -4,18 +4,22 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon src/index.ts",
+    "studio:test": "cross-env DATABASE_URL=file:./dev-test.db npx prisma studio",
+    "studio": "cross-env DATABASE_URL=file:./dev.db npx prisma studio",
+    "test": "cross-env NODE_ENV=test jest",
+    "test:watch": "jest --watch",
     "seed": "node prisma/seed.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "prisma": {
-    "seed": "node prisma/seed.js"
+    "test:db":"DATABASE_URL=file:./dev-test.db npx prisma db push"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@babel/preset-env": "^7.28.0",
     "@prisma/client": "^6.13.0",
+    "babel-jest": "^30.0.5",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
@@ -27,8 +31,11 @@
     "zod": "^4.0.15"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "cross-env": "^10.0.0",
     "jest": "^30.0.5",
     "nodemon": "^3.1.10",
-    "supertest": "^7.1.4"
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.1"
   }
 }
