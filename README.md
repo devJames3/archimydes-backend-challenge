@@ -5,6 +5,37 @@ It is a Node.js + Express REST API with TypeScript, Prisma ORM (SQLite), JWT aut
 
 ---
 
+## Assumptions
+
+- **Role Management**
+
+  - Three roles exist: `USER`, `ADMIN`, and `SUPER_ADMIN`.
+  - Normal users can only view/update/delete their own profiles.
+  - Admins and Super Admins can manage any user account.
+  - Only Super Admins can delete Admins.
+
+- **Authentication**
+
+  - JWT is used for authentication; tokens expire after **1 hour**.
+  - All `/users` routes are protected by the `authenticate` middleware.
+  - Register route (`/auth/register`) only creates `USER` role accounts.
+
+- **Database**
+
+  - Two separate SQLite databases are used:
+    - `dev.db` → for development.
+    - `dev-test.db` → for testing (loaded via `.env.test`).
+  - Databases are excluded from GitHub (`.gitignore`).
+
+- **Environment Variables**
+
+  - `.env` → for development.
+  - `.env.test` → for test environment.
+  - These must be manually created before running the app.
+
+- **Validation**
+  - Request bodies are validated with `zod` schemas via the `validate` middleware.
+
 ## Tech Stack
 
 - Node.js (ESM) + TypeScript
