@@ -1,8 +1,7 @@
-// MUST be first
 import dotenv from 'dotenv';
 dotenv.config({ path: '.env.test' }); 
 
-// Now safe to import Prisma
+
 import { PrismaClient } from '@prisma/client';
 // @ts-ignore
 import { main as runSeed } from '../../prisma/seed';

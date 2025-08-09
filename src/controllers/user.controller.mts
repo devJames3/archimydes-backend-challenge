@@ -15,15 +15,13 @@ export async function listUsers(req: AuthRequest, res: Response) {
     let users;
 
     if (requester.role === Role.SUPER_ADMIN) {
-      // View all users and admins with name, email, role (including admins and users)
       users = await prisma.user.findMany({
         select: { id: true, name: true, email: true, role: true },
         where: {
-          NOT: { role: Role.SUPER_ADMIN } // exclude other super admins? Or show them? Your call. Here I exclude others
+          NOT: { role: Role.SUPER_ADMIN }
         }
       });
     } else if (requester.role === Role.ADMIN) {
-      // View all users and admins (except super admins)
       users = await prisma.user.findMany({
         select: { id: true, name: true, email: true, role: true },
         where: {
@@ -31,7 +29,6 @@ export async function listUsers(req: AuthRequest, res: Response) {
         }
       });
     } else {
-      // Users can only see list of user names, no email or role
       users = await prisma.user.findMany({
         select: { id: true, name: true },
         where: { role: Role.USER }
@@ -81,14 +78,12 @@ export async function updateUser(req: AuthRequest, res: Response) {
     const { id } = req.params;
     const { name, email, password, role } = req.body;
 
-    // Only allow self or admins/super admin to update
     if (requester.id !== id && !(requester.role === Role.ADMIN || requester.role === Role.SUPER_ADMIN)) {
       return sendResponse(res, false, 'Forbidden to update other users', null, []);
     }
 
     // If role change requested
     if (role) {
-      // Only super admin can change roles and only for non super admin users
       if (requester.role !== Role.SUPER_ADMIN) {
         return sendResponse(res, false, 'Only super admin can change roles', null, []);
       }
@@ -97,7 +92,6 @@ export async function updateUser(req: AuthRequest, res: Response) {
       }
     }
 
-    // Prepare data to update
     const data: any = {};
     if (name) data.name = name;
     if (email) data.email = email;
@@ -139,8 +133,6 @@ export async function deleteUser(req: AuthRequest, res: Response) {
     if (requester.role === Role.ADMIN && userToDelete.role === Role.ADMIN && requester.id !== id) {
       return sendResponse(res, false, 'Admins cannot delete other admins', null, []);
     }
-
-    // Admins cannot delete super admin (already blocked above)
 
     await prisma.user.delete({ where: { id } });
     return sendResponse(res, true, 'User deleted');

@@ -1,4 +1,3 @@
-// src/routes/auth.ts
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import prisma from '../config/db.mts';
@@ -12,7 +11,6 @@ const router = Router();
 
 // Register: only for normal users
 router.post('/register', validate(createUserSchema), async (req, res, next) => {
-  // now req.body is already validated and typed
   const { name, email, password } = req.body;
 
   try {
