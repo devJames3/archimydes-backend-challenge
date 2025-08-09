@@ -35,8 +35,8 @@ const options = {
         AuthErrorResponse: {
           type: 'object',
           properties: {
-            success: { type: 'boolean', example: true },
-            message: { type: 'string', example: 'Invalid credentials' },
+            success: { type: 'boolean', example: false },
+            error: { type: 'string', example: 'Invalid credentials' },
           }
         },
         SuccessResponse: {
