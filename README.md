@@ -278,6 +278,10 @@ Users can delete themselves; Admins and Super Admins can delete according to rol
 
 - Run migrations to create and update your database schema.
 
+**Todo**
+
+- adding Swagger information
+
 ### License
 
 MIT
