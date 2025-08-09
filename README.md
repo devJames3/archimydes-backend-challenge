@@ -1,5 +1,6 @@
 # Archimydes Backend Challenge
 
+![architecture](./architecture_diagram.png)
 This is the backend challenge solution for Archimydes.  
 It is a Node.js + Express REST API with TypeScript, Prisma ORM (SQLite), JWT authentication, role-based access control, validation with Zod, and Jest testing.
 
@@ -286,11 +287,8 @@ Users can delete themselves; Admins and Super Admins can delete according to rol
 - adding Swagger information
 - Architecture diagram
 - more test coverage
-- Docker file 
+- Docker file
 
 ### License
 
 MIT
-
-
-
