@@ -78,9 +78,175 @@ npm run studio:test  # for dev-test.db
 
 ### 4. Run the dev server
 
-Run migrations to create your SQLite DB schema:
-
 ```bash
 npm run dev
+```
+
+The server will run at http://`localhost:<PORT>`, default 3000.
+
+### Running Tests
+
+Tests run on the dev-test.db SQLite database configured in .env.test.
+
+Run tests with:
+
+```bash
+npm test
+```
+
+This runs Jest with the test environment loaded from `.env.test`.
+
+### API Routes
+
+#### Auth routes (`/auth`)
+
+POST `/auth/register`
+Register a new user with role `user` only.
+
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+Success response (201):
+
+```json
+{
+  "success": true,
+  "data": {
+    "token": "<jwt_token>"
+  }
+}
+```
+
+Error (400 - email exists):
+
+```json
+{
+  "success": false,
+  "error": {
+    "message": "Email already in use"
+  }
+}
+```
+
+POST `/auth/login`
+Login existing user.
+
+Request body:
+
+```json
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+Success response:
+
+```json
+{
+  "success": true,
+  "data": {
+    "token": "<jwt_token>"
+  }
+}
+```
+
+Error (401):
+
+```json
+{
+  "success": false,
+  "error": {
+    "message": "Invalid credentials"
+  }
+}
+```
+
+#### User routes (`/users`)
+
+All `/users` routes require Authorization header with `Bearer <token>`.
+
+Use the token obtained from `/auth/login `or `/auth/register`.
+
+GET `/users`
+List all users visible to the requester based on their role.
+
+Response:
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "role": "user"
+    },
+    ...
+  ]
+}
+```
+
+GET `/users/:id`
+Get user by ID.
 
 ```
+Users can get their own profile; Admins can get any user profile, Super Admins can get any admin and user profile
+```
+
+PUT `/users/:id`
+Update user by ID.
+
+Validated fields: `name`, `email`, `password`, `role` (role change restricted to super admins).
+
+Request body example:
+
+```json
+{
+  "name": "John Updated",
+  "email": "newemail@example.com",
+  "password": "newpass123",
+  "role": "admin"
+}
+```
+
+Response on success:
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "John Updated",
+    "email": "newemail@example.com",
+    "role": "admin"
+  }
+}
+```
+
+DELETE `/users/:id`
+Delete user by ID.
+
+Users can delete themselves; Admins and Super Admins can delete according to role rules.
+
+#### Important Notes
+
+- Role-based access control is enforced on all protected routes.
+
+- Passwords are securely hashed with bcrypt.
+
+- Errors follow a uniform response format for easy frontend integration.
+
+- Database files (dev.db and dev-test.db) are not pushed to GitHub.
+
+- Run migrations to create and update your database schema.
+
+### License
+
+MIT
