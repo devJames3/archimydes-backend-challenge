@@ -6,6 +6,9 @@ import authRoutes from './routes/auth.mts';
 import userRoutes from './routes/user.mts';
 import { errorHandler } from './middleware/errorHandler.mts';
 
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger.mts';
+
 const app = express();
 
 app.use(helmet());
@@ -15,6 +18,8 @@ app.use(morgan('dev'));
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(errorHandler);
 

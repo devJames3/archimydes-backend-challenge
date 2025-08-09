@@ -3,6 +3,9 @@
 This is the backend challenge solution for Archimydes.  
 It is a Node.js + Express REST API with TypeScript, Prisma ORM (SQLite), JWT authentication, role-based access control, validation with Zod, and Jest testing.
 
+**Swagger Doc**
+`http://localhost:3000/api-docs`
+
 ---
 
 ## Assumptions

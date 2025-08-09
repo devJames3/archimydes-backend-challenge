@@ -8,6 +8,51 @@ import { validate } from '../middleware/validate.mts';
 import { createUserSchema } from '../validations/user.mts';
 
 const router = Router();
+/**
+ * @swagger
+ * tags:
+ *   - name: Auth
+ *     description: Authentication endpoints
+ */
+
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register a new user (role = USER)
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       description: User registration data
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name, email, password]
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     responses:
+ *       200:
+ *         description: Registered successfully (returns token)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthSuccessResponse'
+ *       400:
+ *         description: Validation or email exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthErrorResponse'
+ */
 
 // Register: only for normal users
 router.post('/register', validate(createUserSchema), async (req, res, next) => {
@@ -37,6 +82,37 @@ router.post('/register', validate(createUserSchema), async (req, res, next) => {
   }
 });
 
+
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login and receive JWT token
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email: { type: string, example: john@example.com }
+ *               password: { type: string, example: password123 }
+ *     responses:
+ *       200:
+ *         description: Login successful (returns token)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthSuccessResponse'
+ *       401:
+ *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthErrorResponse'
+ */
 
 // Login
 router.post('/login', async (req, res, next) => {
