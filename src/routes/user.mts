@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authenticate } from '../middleware/auth.mts';
-import { requireRole } from '../middleware/role.mts';
+import { validate } from '../middleware/validate.mts';
+import { updateUserSchema } from '../validations/user.mts';
 import { listUsers, getUser, updateUser, deleteUser } from '../controllers/user.controller.mts';
 
 const router = Router();
@@ -13,7 +14,7 @@ router.get('/', listUsers);
 router.get('/:id', getUser);
 
 // Update user — self or admin/super admin
-router.put('/:id', updateUser);
+router.put('/:id', validate(updateUserSchema), updateUser);
 
 // Delete user — self or admin/super admin with role rules
 router.delete('/:id', deleteUser);
