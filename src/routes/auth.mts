@@ -1,8 +1,8 @@
 // src/routes/auth.ts
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
-import prisma from '../config/db';
-import { signToken } from '../utils/jwt';
+import prisma from '../config/db.mts';
+import { signToken } from '../utils/jwt.mts';
 import { Role } from '@prisma/client';
 
 const router = Router();

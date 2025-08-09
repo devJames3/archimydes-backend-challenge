@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import prisma from '../config/db';
-import { AuthRequest } from '../middleware/auth';
+import prisma from '../config/db.mts';
+import { AuthRequest } from '../middleware/auth.mts';
 import bcrypt from 'bcryptjs';
 import { Role } from '@prisma/client';
 

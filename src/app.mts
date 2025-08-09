@@ -2,9 +2,9 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
-import authRoutes from './routes/auth';
-import userRoutes from './routes/user';
-import { errorHandler } from './middleware/errorHandler';
+import authRoutes from './routes/auth.mts';
+import userRoutes from './routes/user.mts';
+import { errorHandler } from './middleware/errorHandler.mts';
 
 const app = express();
 

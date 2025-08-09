@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { authenticate } from '../middleware/auth';
-import { requireRole } from '../middleware/role';
-import { listUsers, getUser, updateUser, deleteUser } from '../controllers/user.controller';
+import { authenticate } from '../middleware/auth.mts';
+import { requireRole } from '../middleware/role.mts';
+import { listUsers, getUser, updateUser, deleteUser } from '../controllers/user.controller.mts';
 
 const router = Router();
 
