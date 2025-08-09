@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { authenticate } from '../middleware/auth.mts';
-import { validate } from '../middleware/validate.mts';
-import { updateUserSchema } from '../validations/user.mts';
-import { listUsers, getUser, updateUser, deleteUser } from '../controllers/user.controller.mts';
+import { authenticate } from '../middleware/auth.js';
+import { validate } from '../middleware/validate.js';
+import { updateUserSchema } from '../validations/user.js';
+import { listUsers, getUser, updateUser, deleteUser } from '../controllers/user.controller.js';
 
 const router = Router();
 

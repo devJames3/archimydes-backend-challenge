@@ -1,6 +1,5 @@
-// src/config/swagger.mts
 import swaggerJsdoc from 'swagger-jsdoc';
-import { PORT } from './env.mts';
+import { PORT } from './env.js';
 
 const port = PORT ?? 3000;
 
@@ -67,7 +66,7 @@ const options = {
       }
     }
   },
-  apis: ['./src/routes/*.mts', './src/controllers/*.mts'] 
+  apis: ['./src/routes/*.js', './src/controllers/*.js'] 
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

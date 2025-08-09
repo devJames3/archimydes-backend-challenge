@@ -3,8 +3,8 @@ dotenv.config({ path: '.env.test' });
 
 
 import { PrismaClient } from '@prisma/client';
-// @ts-ignore
-import { main as runSeed } from '../../prisma/seed';
+
+import { main as runSeed } from '../../prisma/seed.js';
 
 const prisma = new PrismaClient();
 

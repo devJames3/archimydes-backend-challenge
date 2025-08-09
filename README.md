@@ -111,7 +111,13 @@ npm run studio       # for dev.db
 npm run studio:test  # for dev-test.db
 ```
 
-### 4. Run the dev server
+### 4. Crete a Super Admin from the details in your `.env` file run:
+
+```bash
+npm run seed
+```
+
+### 5. Run the dev server
 
 ```bash
 npm run dev

@@ -1,17 +1,17 @@
-import { Request, Response } from 'express';
-import prisma from '../config/db.mts';
-import { AuthRequest } from '../middleware/auth.mts';
+import prisma from '../config/db.js';
 import bcrypt from 'bcryptjs';
-import { Role } from '@prisma/client';
+import pkg from '@prisma/client';
+
+const { Role } = pkg;
 
 // Helper: uniform response
-function sendResponse(res: Response, success: boolean, message: string, data: any = null, errors: any[] = []) {
+function sendResponse(res, success, message, data, errors) {
   return res.json({ success, message, data, errors });
 }
 
-export async function listUsers(req: AuthRequest, res: Response) {
+export async function listUsers(req, res) {
   try {
-    const requester = req.user!;
+    const requester = req.user;
     let users;
 
     if (requester.role === Role.SUPER_ADMIN) {
@@ -42,9 +42,9 @@ export async function listUsers(req: AuthRequest, res: Response) {
   }
 }
 
-export async function getUser(req: AuthRequest, res: Response) {
+export async function getUser(req, res) {
   try {
-    const requester = req.user!;
+    const requester = req.user;
     const { id } = req.params;
 
     if (requester.role === Role.USER && requester.id !== id) {
@@ -72,9 +72,9 @@ export async function getUser(req: AuthRequest, res: Response) {
   }
 }
 
-export async function updateUser(req: AuthRequest, res: Response) {
+export async function updateUser(req, res) {
   try {
-    const requester = req.user!;
+    const requester = req.user;
     const { id } = req.params;
     const { name, email, password, role } = req.body;
 
@@ -92,7 +92,7 @@ export async function updateUser(req: AuthRequest, res: Response) {
       }
     }
 
-    const data: any = {};
+    const data = {};
     if (name) data.name = name;
     if (email) data.email = email;
     if (password) data.password = await bcrypt.hash(password, 10);
@@ -110,9 +110,9 @@ export async function updateUser(req: AuthRequest, res: Response) {
   }
 }
 
-export async function deleteUser(req: AuthRequest, res: Response) {
+export async function deleteUser(req, res) {
   try {
-    const requester = req.user!;
+    const requester = req.user;
     const { id } = req.params;
 
     if (requester.id !== id && requester.role === Role.USER) {

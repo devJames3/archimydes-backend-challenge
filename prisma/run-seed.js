@@ -36,3 +36,12 @@ export async function main() {
 
   console.log('Super admin created:', email);
 }
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

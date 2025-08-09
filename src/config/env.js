@@ -9,8 +9,8 @@ for (const k of required) {
 }
 
 export const PORT = process.env.PORT || '3000';
-export const DATABASE_URL = process.env.DATABASE_URL!;
-export const JWT_SECRET = process.env.JWT_SECRET!;
-export const SUPER_ADMIN_EMAIL = process.env.SUPER_ADMIN_EMAIL!;
-export const SUPER_ADMIN_PASSWORD = process.env.SUPER_ADMIN_PASSWORD!;
+export const DATABASE_URL = process.env.DATABASE_URL;
+export const JWT_SECRET = process.env.JWT_SECRET;
+export const SUPER_ADMIN_EMAIL = process.env.SUPER_ADMIN_EMAIL;
+export const SUPER_ADMIN_PASSWORD = process.env.SUPER_ADMIN_PASSWORD;
 export const NODE_ENV = process.env.NODE_ENV || 'development';

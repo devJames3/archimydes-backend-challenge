@@ -2,12 +2,12 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
-import authRoutes from './routes/auth.mts';
-import userRoutes from './routes/user.mts';
-import { errorHandler } from './middleware/errorHandler.mts';
+import authRoutes from './routes/auth.js';
+import userRoutes from './routes/user.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 import swaggerUi from 'swagger-ui-express';
-import { swaggerSpec } from './config/swagger.mts';
+import { swaggerSpec } from './config/swagger.js';
 
 const app = express();
 
