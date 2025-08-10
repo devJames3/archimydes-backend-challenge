@@ -1,9 +1,10 @@
 import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs';
 dotenv.config({ path: '.env.test' });
 
 import request from 'supertest';
 import { PrismaClient, Role } from '@prisma/client';
-import app from '../app';
+import app from '../app.js';
 
 const prisma = new PrismaClient();
 
@@ -21,7 +22,7 @@ describe('Auth & Users routes', () => {
       data: {
         name: 'Super Admin',
         email: process.env.SUPER_ADMIN_EMAIL || 'superadmin@example.com',
-        password: await require('bcryptjs').hash('password123', 10),
+        password: await bcrypt.hash('password123', 10),
         role: Role.SUPER_ADMIN
       }
     });
@@ -70,8 +71,8 @@ describe('Auth & Users routes', () => {
       .set('Authorization', `Bearer ${superAdminToken}`);
 
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    createdUserId = res.body.find((u) => u.email === 'testuser@example.com').id;
+    expect(Array.isArray(res.body.data)).toBe(true);
+    createdUserId = res.body.data.find((u) => u.email === 'testuser@example.com').id;
   });
 
   it('User should get their own profile', async () => {
@@ -80,7 +81,7 @@ describe('Auth & Users routes', () => {
       .set('Authorization', `Bearer ${userToken}`);
 
     expect(res.status).toBe(200);
-    expect(res.body.email).toBe('testuser@example.com');
+    expect(res.body.data.name).toBe('Test User');
   });
 
   it('User should update their own profile', async () => {
@@ -90,7 +91,7 @@ describe('Auth & Users routes', () => {
       .send({ name: 'Updated Name' });
 
     expect(res.status).toBe(200);
-    expect(res.body.name).toBe('Updated Name');
+    expect(res.body.data.name).toBe('Updated Name');
   });
 
   it('Super Admin should delete the user', async () => {

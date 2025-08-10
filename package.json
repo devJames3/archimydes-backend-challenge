@@ -6,16 +6,13 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
+    "dev:test": "dotenv -e .env.test -- nodemon src/index.js",
     "studio": "prisma studio",
     "studio:test": "dotenv -e .env.test -- npx prisma studio",
-    "test": "dotenv -e .env.test -- jest -i",
+    "test": "dotenv -e .env.test -- node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "migrate": "prisma migrate dev",
     "migrate:test": "dotenv -e .env.test -- npx prisma migrate dev",
     "seed": "node prisma/run-seed.js"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "transform": {}
   },
   "keywords": [],
   "author": "",
