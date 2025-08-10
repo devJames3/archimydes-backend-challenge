@@ -21,7 +21,7 @@ export async function listUsers(req, res) {
     let selectFields;
 
     if (requester.role === Role.SUPER_ADMIN) {
-      whereClause = { NOT: { role: Role.SUPER_ADMIN } };
+      whereClause = {};
       selectFields = { id: true, name: true, email: true, role: true };
     } else if (requester.role === Role.ADMIN) {
       whereClause = { NOT: { role: Role.SUPER_ADMIN } };
@@ -59,30 +59,45 @@ export async function getUser(req, res) {
     const requester = req.user;
     const { id } = req.params;
 
-    if (requester.role === Role.USER && requester.id !== id) {
-      return sendResponse(res, false, 'Forbidden to view other users', null, []);
-    }
-
-    const user = await prisma.user.findUnique({
+    const targetUser = await prisma.user.findUnique({
       where: { id },
-      select: {
-        id: true,
-        name: true,
-        email: requester.role === Role.USER ? false : true,
-        role: requester.role === Role.USER ? false : true,
-      }
+      select: { id: true, name: true, email: true, role: true }
     });
 
-    if (!user) {
+    if (!targetUser) {
       return sendResponse(res, false, 'User not found', null, []);
     }
 
-    return sendResponse(res, true, 'User retrieved', user);
+    // Permission checks
+    if (requester.role === Role.USER) {
+      if (requester.id !== targetUser.id) {
+        return sendResponse(res, false, 'Forbidden to view other users', null, []);
+      }
+    } else if (requester.role === Role.ADMIN) {
+      if (
+        requester.id !== targetUser.id &&
+        targetUser.role === Role.SUPER_ADMIN
+      ) {
+        return sendResponse(res, false, 'Forbidden to view super admins', null, []);
+      }
+    }
+  
+    let responseUser = { ...targetUser };
+    if (requester.role === Role.USER && requester.id === targetUser.id) {
+      responseUser = {
+        id: targetUser.id,
+        name: targetUser.name
+      };
+    }
+
+    return sendResponse(res, true, 'User retrieved', responseUser);
+
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     return sendResponse(res, false, 'Failed to get user', null, [{ message: errorMessage }]);
   }
 }
+
 
 export async function updateUser(req, res) {
   try {
@@ -90,11 +105,31 @@ export async function updateUser(req, res) {
     const { id } = req.params;
     const { name, email, password, role } = req.body;
 
-    if (requester.id !== id && !(requester.role === Role.ADMIN || requester.role === Role.SUPER_ADMIN)) {
-      return sendResponse(res, false, 'Forbidden to update other users', null, []);
+    const targetUser = await prisma.user.findUnique({
+      where: { id },
+      select: { id: true, role: true }
+    });
+
+    if (!targetUser) {
+      return sendResponse(res, false, 'User not found', null, []);
     }
 
-    // If role change requested
+    // Permission checks
+    if (requester.role === Role.USER) {
+      if (requester.id !== targetUser.id) {
+        return sendResponse(res, false, 'Forbidden to update other users', null, []);
+      }
+    } else if (requester.role === Role.ADMIN) {
+      if (
+        requester.id !== targetUser.id &&
+        (targetUser.role === Role.SUPER_ADMIN ||
+          targetUser.role === Role.ADMIN)
+      ) {
+        return sendResponse(res, false, 'Forbidden to update admins or super admins', null, []);
+      }
+    }
+
+    // Role change rules
     if (role) {
       if (requester.role !== Role.SUPER_ADMIN) {
         return sendResponse(res, false, 'Only super admin can change roles', null, []);
@@ -104,6 +139,7 @@ export async function updateUser(req, res) {
       }
     }
 
+    // Prepare update data
     const data = {};
     if (name) data.name = name;
     if (email) data.email = email;
@@ -112,10 +148,11 @@ export async function updateUser(req, res) {
 
     const updated = await prisma.user.update({
       where: { id },
-      data
+      data,
+      select: { id: true, name: true, email: true, role: true }
     });
 
-    return sendResponse(res, true, 'User updated', { id: updated.id, name: updated.name, email: updated.email, role: updated.role });
+    return sendResponse(res, true, 'User updated', updated);
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     return sendResponse(res, false, 'Failed to update user', null, [{ message: errorMessage }]);
