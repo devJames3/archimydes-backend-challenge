@@ -296,9 +296,6 @@ Users can delete themselves; Admins and Super Admins can delete according to rol
 
 **Todo**
 
-- adding Swagger information
-- Architecture diagram
-- more test coverage
 - Docker file
 
 ### License
