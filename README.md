@@ -215,6 +215,8 @@ All `/users` routes require Authorization header with `Bearer <token>`.
 Use the token obtained from `/auth/login `or `/auth/register`.
 
 GET `/users`
+optional `page` & `limit` parameters - `/users?page=2&limit=5` defaults to `10`.
+
 List all users visible to the requester based on their role.
 
 Response:
@@ -224,6 +226,10 @@ Response:
   "success": true,
   "data": [
     {
+      "total": 13,
+      "page": 1,
+      "limit": 10,
+      "totalPages": 2,
       "id": 1,
       "name": "John Doe",
       "email": "john@example.com",

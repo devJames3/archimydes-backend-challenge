@@ -12,7 +12,8 @@
     "test": "dotenv -e .env.test -- node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "migrate": "prisma migrate dev",
     "migrate:test": "dotenv -e .env.test -- npx prisma migrate dev",
-    "seed": "node prisma/run-seed.js"
+    "seed": "node prisma/run-seed.js",
+    "seed:test": "dotenv -e .env.test -- node prisma/run-seed.js"
   },
   "keywords": [],
   "author": "",

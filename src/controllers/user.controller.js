@@ -12,35 +12,47 @@ function sendResponse(res, success, message, data, errors) {
 export async function listUsers(req, res) {
   try {
     const requester = req.user;
-    let users;
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    let whereClause;
+    let selectFields;
 
     if (requester.role === Role.SUPER_ADMIN) {
-      users = await prisma.user.findMany({
-        select: { id: true, name: true, email: true, role: true },
-        where: {
-          NOT: { role: Role.SUPER_ADMIN }
-        }
-      });
+      whereClause = { NOT: { role: Role.SUPER_ADMIN } };
+      selectFields = { id: true, name: true, email: true, role: true };
     } else if (requester.role === Role.ADMIN) {
-      users = await prisma.user.findMany({
-        select: { id: true, name: true, email: true, role: true },
-        where: {
-          NOT: { role: Role.SUPER_ADMIN }
-        }
-      });
+      whereClause = { NOT: { role: Role.SUPER_ADMIN } };
+      selectFields = { id: true, name: true, email: true, role: true };
     } else {
-      users = await prisma.user.findMany({
-        select: { id: true, name: true },
-        where: { role: Role.USER }
-      });
+      whereClause = { role: Role.USER };
+      selectFields = { id: true, name: true };
     }
 
-    return sendResponse(res, true, 'Users retrieved', users);
+    const total = await prisma.user.count({ where: whereClause });
+
+    const users = await prisma.user.findMany({
+      select: selectFields,
+      where: whereClause,
+      skip,
+      take: limit,
+    });
+
+    return sendResponse(res, true, 'Users retrieved', {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      data: users
+    });
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     return sendResponse(res, false, 'Failed to list users', null, [{ message: errorMessage }]);
   }
 }
+
 
 export async function getUser(req, res) {
   try {

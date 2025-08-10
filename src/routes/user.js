@@ -19,10 +19,24 @@ router.use(authenticate);
  * @swagger
  * /users:
  *   get:
- *     summary: List users (visibility depends on role)
+ *     summary: Get list of users
+ *     description: Retrieves users list based on role. SUPER_ADMIN and ADMIN get full details, USER gets minimal info.
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *         description: Number of results per page
  *     responses:
  *       200:
  *         description: Users list
