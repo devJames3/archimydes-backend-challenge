@@ -71,8 +71,8 @@ describe('Auth & Users routes', () => {
       .set('Authorization', `Bearer ${superAdminToken}`);
 
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body.data)).toBe(true);
-    createdUserId = res.body.data.find((u) => u.email === 'testuser@example.com').id;
+    expect(Array.isArray(res.body.data.data)).toBe(true);
+    createdUserId = res.body.data.data.find((u) => u.email === 'testuser@example.com').id;
   });
 
   it('User should get their own profile', async () => {
